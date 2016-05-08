@@ -9,6 +9,8 @@ import search
 
 # Emojis icon
 metro = u'\U0001F689'
+star = u'\U00002B50'
+smile = u'\U0001F609'
 
 API_TOKEN = 'API_TOKEN'
 
@@ -139,7 +141,7 @@ def alert(message):
 @bot.message_handler(commands=['about'])
 def about(message):
    cid = message.chat.id
-   bot.reply_to(message, "Bot développé en python by @cl3m3nt \n Share bot https://telegram.me/ratpbot \n Source code : https://github.com/cl3m3nt666/ratpBot ")
+   bot.reply_to(message, "Bot développé en python by @cl3m3nt \n Share bot https://storebot.me/bot/ratpbot \n Source code : https://github.com/cl3m3nt666/ratpBot \n\n If you like our bot, please put " + star + star + star + star + star + " in the storebot " )
 
 
 

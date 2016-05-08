@@ -7,6 +7,9 @@ This Bot is written in Python3 with the help from the pyTelegramBotAPI and RATP 
 
 Telegram Bot @ratpbot
 
+Telegram Bot store : https://storebot.me/bot/ratpbot
+
+If you like our bot, please put ⭐️⭐️⭐️⭐️⭐️ in the storebot
 
 # Getting token
 
@@ -16,7 +19,7 @@ Open the file "bot.py" and replace following token with your options:
 API_TOKEN = 'YOUR TOKEN'
 ```
 
-This should be your Token received from Botfather.
+This should be your Token received from @Botfather.
 
 
 # Getting starting  
