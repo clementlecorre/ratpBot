@@ -1,7 +1,7 @@
 ratp Bot
 ======
 
-RATP bot telegram allows for schedules and alert the public transport in French.
+A bot that will provide schedules and alerts for RATP trains, subways, and buses in France.
 
 This Bot is written in Python3 with the help from the pyTelegramBotAPI and RATP API.
 
