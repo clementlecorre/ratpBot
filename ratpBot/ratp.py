@@ -7,7 +7,7 @@ import bs4
 from unidecode import unidecode
 
 def getPage (page):
-  conn = http.client.HTTPConnection("wap.ratp.fr", timeout=10)
+  conn = http.client.HTTPConnection("wap.ratp.fr", timeout=30)
   #We need a "proper" UA otherwise ratp.fr gives us a boggus page
   conn.request("GET", page, "",
       {"User-Agent":"Mozilla/5.0 (X11; Linux x86_64; rv:10.0.4) "
