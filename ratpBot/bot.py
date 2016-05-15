@@ -37,7 +37,7 @@ def help(message):
 @bot.message_handler(commands=['metro','m', 'Metro'])
 def metro(message):
     cid = message.chat.id
-    #bot.send_chat_action(cid, 'typing')
+    bot.send_chat_action(cid, 'typing')
     destination = None
     stations = None
     options = message.text
@@ -57,7 +57,7 @@ def metro(message):
 @bot.message_handler(commands=['Tram','tram', 't'])
 def tram(message):
     cid = message.chat.id
-    #bot.send_chat_action(cid, 'typing')
+    bot.send_chat_action(cid, 'typing')
     destination = None
     stations = None
     options = message.text
@@ -76,7 +76,7 @@ def tram(message):
 @bot.message_handler(commands=['Rer','rer'])
 def rer(message):
     cid = message.chat.id
-    #bot.send_chat_action(cid, 'typing')
+    bot.send_chat_action(cid, 'typing')
     destination = None
     stations = None
     options = message.text
@@ -95,7 +95,7 @@ def rer(message):
 @bot.message_handler(commands=['Bus','bus', 'b'])
 def bus(message):
     cid = message.chat.id
-    #bot.send_chat_action(cid, 'typing')
+    bot.send_chat_action(cid, 'typing')
     destination = None
     stations = None
     options = message.text
@@ -115,7 +115,7 @@ def bus(message):
 @bot.message_handler(commands=['noctilien','Noctilien', 'n'])
 def noctilien(message):
     cid = message.chat.id
-    #bot.send_chat_action(cid, 'typing')
+    bot.send_chat_action(cid, 'typing')
     destination = None
     stations = None
     options = message.text
@@ -134,7 +134,7 @@ def noctilien(message):
 @bot.message_handler(commands=['alert'])
 def alert(message):
     cid = message.chat.id
-    #bot.send_chat_action(cid, 'typing')
+    bot.send_chat_action(cid, 'typing')
     options = message.text
     if options:
         options = re.findall(r'\S+', options)
