@@ -14,11 +14,23 @@ import time
 metro = u'\U0001F689'
 star = u'\U00002B50'
 smile = u'\U0001F609'
+CRYINGFACE = u'\U0001F622'
 
 # API_TOKEN -> @botfather
 # https://telegram.me/botfather
 # Example API : 110201543:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw
 API_TOKEN = 'API_TOKEN'
+
+bot = telebot.TeleBot(API_TOKEN)
+
+ratp_dict = {}
+
+class Ratp:
+    def __init__(self, transport):
+        self.transport = transport
+        self.line = None
+        self.stations = None
+        self.destination = None
 
 bot = telebot.TeleBot(API_TOKEN)
 
@@ -50,7 +62,7 @@ def metro(message):
         if len(options) == 2:
             bot.send_message(cid, search.extractInformation("metro", str(options[1]), stations, destination) )
         if len(options) == 1:
-            bot.send_message(cid, " Attention tu t'es trompé dans la syntaxe ! ^^ \n Exemple : \n /Metro 13 invalide Courtille")
+            bot.send_message(cid, " Attention tu t'es trompé dans la syntax ! ^^ \n Exemple : \n /Metro 13 invalide Courtille")
 
 
 # Handle '/tram' or 't' or '/Tram'
@@ -70,7 +82,7 @@ def tram(message):
         if len(options) == 2:
             bot.send_message(cid, search.extractInformation("tram", str(options[1]), stations, destination) )
         if len(options) == 1:
-            bot.send_message(cid, "Attention tu t'es trompé dans la syntaxe ! ^^ \n Exemple : \n /tram T1 village Noisy")
+            bot.send_message(cid, "Attention tu t'es trompé dans la syntax ! ^^ \n Exemple : \n /tram T1 village Noisy")
 
 # Handle '/rer' or '/Rer'
 @bot.message_handler(commands=['Rer','rer'])
@@ -89,7 +101,7 @@ def rer(message):
         if len(options) == 2:
             bot.send_message(cid, search.extractInformation("rer", str(options[1]), stations, destination) )
         if len(options) == 1:
-            bot.send_message(cid, "Attention tu t'es trompé dans la syntaxe ! ^^ \n Exemple : \n /rer a nation")
+            bot.send_message(cid, "Attention tu t'es trompé dans la syntax ! ^^ \n Exemple : \n /rer a nation")
 
 # Handle '/bus' or '/Bus' or '/b'
 @bot.message_handler(commands=['Bus','bus', 'b'])
@@ -108,7 +120,7 @@ def bus(message):
         if len(options) == 2:
             bot.send_message(cid, search.extractInformation("bus", str(options[1]), stations, destination) )
         if len(options) == 1:
-            bot.send_message(cid, "Attention tu t'es trompé dans la syntaxe ! ^^ \n Exemple : \n /bus 137 Mairie")
+            bot.send_message(cid, "Attention tu t'es trompé dans la syntax ! ^^ \n Exemple : \n /bus 137 Mairie")
 
 
 # Handle '/noctilien' or '/Noctilien'
@@ -128,7 +140,7 @@ def noctilien(message):
         if len(options) == 2:
             bot.send_message(cid, search.extractInformation("noctilien", str(options[1]), stations, destination) )
         if len(options) == 1:
-            bot.send_message(cid, "Attention tu t'es trompé dans la syntaxe ! ^^ \n Exemple : \n /noctilien ligne arret")
+            bot.send_message(cid, "Attention tu t'es trompé dans la syntax ! ^^ \n Exemple : \n /noctilien ligne arret")
 
 # Handle '/alert'
 @bot.message_handler(commands=['alert'])
@@ -141,7 +153,7 @@ def alert(message):
         if len(options) == 3:
             bot.send_message(cid, search.getDisturbance(str(options[1]), str(options[2]) ))
         if len(options) == 1:
-            bot.send_message(cid, "Attention tu t'es trompé dans la syntaxe ! ^^ \n Exemple : \n /alert {manif, travaux, alerte} {metro,tram,rer} \n /alert manif metro")
+            bot.send_message(cid, "Attention tu t'es trompé dans la syntax ! ^^ \n Exemple : \n /alert {manif, travaux, alerte} {metro,tram,rer} \n /alert manif metro")
 
 # /about
 @bot.message_handler(commands=['about'])
@@ -151,11 +163,50 @@ def about(message):
 
 
 
-# Handle all other messages with content_type 'text'
-@bot.message_handler(func=lambda message: True)
-def echo_message(message):
-    bot.reply_to(message, """Type /metro ligne arret \n  Type /tram ligne arret \n  Type /rer ligne arret  \n  Type /bus ligne arret  \n  Type /noctilien ligne arret  """)
+# Handle '/go'
+@bot.message_handler(commands=['go'])
+def send_go(message):
+    cid = message.chat.id
+    transport = "metro"
+    user = Ratp(transport)
+    ratp_dict[cid] = user
+    msg = bot.reply_to(message, "Heee salut tu veux prendre le metro, rer, tram, bus ou noctilien ?  " + smile + smile )
+    bot.register_next_step_handler(msg, processTransportStep)
 
+def processTransportStep(message):
+    try:
+        cid = message.chat.id
+        user = ratp_dict[cid]
+        user.transport = message.text
+        #if message.text not in ("metro", "tram", "rer", "noctilien", "bus"):
+        if message.text == "noctilien":
+            msg = bot.reply_to(message, 'Quelle ligne de ' + user.transport +  ' ? Ahh tu rentre encore de soirée ! ')
+        else:
+            msg = bot.reply_to(message, 'Quelle ligne de ' + user.transport + ' ?')
+        bot.register_next_step_handler(msg, processLineStep)
+    except Exception as e:
+        bot.reply_to(message, CRYINGFACE + ' oooops je suis trop fatigué pour y arriver..')
+
+def processLineStep(message):
+    try:
+        cid = message.chat.id
+        user = ratp_dict[cid]
+        user.line = message.text
+        msg = bot.reply_to(message, 'Quel arret pour la ligne de ' + user.transport + ' '+  user.line +  ' ?')
+        bot.register_next_step_handler(msg, processStationsStep)
+    except Exception as e:
+        bot.reply_to(message, CRYINGFACE + ' oooops je suis trop fatigué pour y arriver..')
+
+def processStationsStep(message):
+    try:
+        cid = message.chat.id
+        bot.send_chat_action(cid, 'typing')
+        user = ratp_dict[cid]
+        user.stations = message.text
+        destination = None
+        bot.send_message(cid, search.extractInformation(user.transport, user.line ,user.stations , user.destination))
+    except Exception as e:
+        bot.reply_to(message, CRYINGFACE + ' oooops je suis trop fatigué pour y arriver.. Ressaye! ' + str(e))
 
 
 while True:

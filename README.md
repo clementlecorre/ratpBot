@@ -1,7 +1,7 @@
 ratp Bot
 ======
 
-A bot that will provide schedules and alerts for RATP trains, subways, and buses in France. 
+A bot that will provide schedules and alerts for RATP trains, subways, and buses in France.
 
 This Bot is written in Python3 with the help from the pyTelegramBotAPI and RATP API.
 
@@ -126,4 +126,46 @@ ratp 🚇, [04.05.16 10:17]
 🚩 Prochains passages du bus ligne 132 à l'arrêt Utrillo :
 🚉—Utrillo: 0 mn direction Vitry Moulin Vert;
 🚉—Utrillo: 7 mn direction Vitry Moulin Vert;
+```
+
+
+Update
+
+
+
+```
+Username, [27.05.16 18:28]
+/go
+
+ratp 🚇, [27.05.16 18:28]
+[In reply to Username]
+Heee salut tu veux prendre le metro, rer, tram, bus ou noctilien ?  😉😉
+
+Username, [27.05.16 18:28]
+metro
+
+ratp 🚇, [27.05.16 18:28]
+[In reply to Username]
+Quelle ligne de metro ?
+
+Clément, [27.05.16 18:28]
+13
+
+ratp 🚇, [27.05.16 18:29]
+[In reply to Username]
+Quel arret pour la ligne de metro 13 ?
+
+Username, [27.05.16 18:29]
+invalides
+
+ratp 🚇, [27.05.16 18:29]
+🚩 Prochains passages du metro ligne 13 à l'arrêt Invalides :
+🚉—Invalides: 0 mn direction Saint Denis Universit;
+🚉—Invalides: 2 mn direction Asnieres Gennevilliers Les Courtilles;
+🚉—Invalides: 4 mn direction Saint Denis Universit;
+🚉—Invalides: 6 mn direction Asnieres Gennevilliers Les Courtilles;
+🚉—Invalides: Train a quai direction Chatillon Montrouge;
+🚉—Invalides: 0 mn direction Chatillon Montrouge;
+🚉—Invalides: 2 mn direction Chatillon Montrouge;
+🚉—Invalides: 4 mn direction Chatillon Montrouge;
 ```
