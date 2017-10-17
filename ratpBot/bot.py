@@ -1,4 +1,4 @@
-#! /usr/bin/python3
+#!/usr/bin/env python
 # encoding: utf-8
 # Store : https://storebot.me/bot/ratpbot
 
@@ -19,7 +19,7 @@ CRYINGFACE = u'\U0001F622'
 # API_TOKEN -> @botfather
 # https://telegram.me/botfather
 # Example API : 110201543:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw
-API_TOKEN = 'API_TOKEN'
+API_TOKEN = os.environ['API_TOKEN']
 
 bot = telebot.TeleBot(API_TOKEN)
 

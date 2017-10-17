@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/bin/sh
 echo "Initializing..."
   while true
   do
     echo "Bot started.. $(date)"
-    python3 bot.py
+    python bot.py
     echo "The bot is crashed :( !"
     echo "Rebooting in: "
     for i in 1
