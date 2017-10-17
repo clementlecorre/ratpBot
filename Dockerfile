@@ -4,4 +4,5 @@ ENV API_TOKEN=changeme
 COPY ratpBot /ratpBot
 WORKDIR /ratpBot
 RUN pip install -r requirements.txt
-CMD ["sh", "runbot.sh"]
+ENTRYPOINT ["python"]
+CMD ["bot.py"]

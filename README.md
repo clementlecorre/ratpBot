@@ -16,7 +16,7 @@ If you like our bot, please put ⭐️⭐️⭐️⭐️⭐️ in the storebot
 Open the file "bot.py" and replace following token with your options:
 
 ```
-API_TOKEN = 'YOUR TOKEN'
+-e API_TOKEN='YOUR TOKEN'
 ```
 
 This should be your Token received from @Botfather.
@@ -27,7 +27,12 @@ This should be your Token received from @Botfather.
 Starting bot in docker container :
 
 ```
-docker build -t ratpbot:latest . && docker run -itd -h ratpbot --name ratpbot ratpbot:latest
+docker build -t ratpbot:latest . && docker run -itd -h ratpbot --name ratpbot -e API_TOKEN=your-token ratpbot:latest
+```
+
+From dockerhub
+```
+docker run -d --restart always -h ratpbot --name ratpbot -e API_TOKEN=your-token cl3m3nt/ratpbot:latest
 ```
 
 # Commands
