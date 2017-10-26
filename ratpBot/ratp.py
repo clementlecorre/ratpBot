@@ -21,7 +21,7 @@ def getPage (page):
 def getAllStationsUrls(transport, line):
   page = getPage("/siv/schedule?stationname=*&reseau=%s&linecode=%s"
       % (transport.lower(), line.lower()))
-  soup = bs4.BeautifulSoup(page)
+  soup = bs4.BeautifulSoup(page, "html.parser")
   stations = []
   directions = {}
   links = soup.findAll('a')
@@ -34,7 +34,7 @@ def getAllStationsUrls(transport, line):
     stations = []
     for name in directions:
       page = getPage("/siv/"+directions[name])
-      soup = bs4.BeautifulSoup(page)
+      soup = bs4.BeautifulSoup(page, "html.parser")
       links = soup.findAll('a')
       for link in links:
         if re.search(r'stationid=', str(link)):
@@ -82,7 +82,7 @@ def searchNameInData(name, data):
 def getAllStations(transport, line):
   page = getPage('/siv/schedule?stationname=*&reseau=%s&linecode=%s'
       % (transport.lower(), line))
-  soup = bs4.BeautifulSoup(page)
+  soup = bs4.BeautifulSoup(page, "html.parser")
   stations = {}
   directions = {}
   links = soup.findAll('a')
@@ -95,7 +95,7 @@ def getAllStations(transport, line):
     stations = []
     for name in directions:
       page = getPage("/siv/"+directions[name])
-      soup = bs4.BeautifulSoup(page)
+      soup = bs4.BeautifulSoup(page, "html.parser")
       links = soup.findAll('a')
       for link in links:
         if re.search(r'stationid=', str(link)):
@@ -108,7 +108,7 @@ def getNextStopsAtStation(transport, line, station, direction=None):
   for key, url in stations:
     if searchNameInData(station, key):
       page = getPage("/siv/"+url)
-      soup = bs4.BeautifulSoup(page)
+      soup = bs4.BeautifulSoup(page, "html.parser")
       results += getStationTimes(soup, key, direction)
   return results
 
@@ -125,12 +125,12 @@ def getDisturbance(cause, transport):
 
 def getDisturbanceFromCause(cause, transport):
     page = getPage('/siv/perturbation?cause=%s&reseau=%s' % (cause, transport))
-    soup = bs4.BeautifulSoup(page)
+    soup = bs4.BeautifulSoup(page, "html.parser")
     content = soup.find_all('div', { "class" : "bg1" })
     disturbances = ""
     for item in content:
         if disturbances != "":
             disturbances += "\n"
         item = str(item).replace('<br/>', ' ').replace('  ', ' ')
-        disturbances += (bs4.BeautifulSoup(item).get_text())
+        disturbances += (bs4.BeautifulSoup(item, "html.parser").get_text())
     return disturbances

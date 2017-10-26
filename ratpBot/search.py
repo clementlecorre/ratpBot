@@ -20,11 +20,11 @@ def extractInformation(transport,
     for time, direction, stationname in times:
       station = stationname
       if direction:
-        stops += ("\n%s—%s: %s direction %s;" % (metro, station, time, direction))
+        stops += ("\n%s-%s: %s direction %s;" % (metro, station, time, direction))
       else:
-        stops += ("\n%s—%s: %s;" % (CLOCK, station, time))
+        stops += ("\n%s-%s: %s;" % (CLOCK, station, time))
     if len(stops) > 0:
-      resultat += ("%s Prochains passages du %s ligne %s à l'arrêt %s : %s \n" % (flag, transport, line, stationname, stops))
+      resultat += ("%s Prochains passages du %s ligne %s à l'arrêt %s : %s \n" % (flag, transport, line, stationname, stops))
     else:
       resultat += ("La station `%s' ne semble pas exister sur le %s ligne %s." % (station, transport, line))
   else:
@@ -32,8 +32,8 @@ def extractInformation(transport,
     if len(stations) > 0:
       s = ""
       for name in stations:
-        s += "\n— " + name + " ;"
-      resultat = ("%s Stations : %s" % (metro,s))
+        s += "\n- " + name + " ;"
+      resultat = ("%s Stations : %s" % (metro,s))
     else:
       resultat = ("%s Sorry, Aucune station trouvée." % (CRYINGFACE))
   return resultat

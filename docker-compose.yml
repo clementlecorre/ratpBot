@@ -1,0 +1,12 @@
+version: '2'
+services:
+  ratpbot:
+    build: .
+    environment:
+      - API_TOKEN=
+    restart: always
+  redis:
+    image: redis:3.2-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - $PWD/data:/data

@@ -9,6 +9,7 @@ import re
 import search
 import requests
 import time
+import redis
 
 # Emojis icon
 metro = u'\U0001F689'
@@ -21,9 +22,9 @@ CRYINGFACE = u'\U0001F622'
 # Example API : 110201543:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw
 API_TOKEN = os.environ['API_TOKEN']
 
-bot = telebot.TeleBot(API_TOKEN)
-
 ratp_dict = {}
+
+r = redis.Redis('redis')
 
 class Ratp:
     def __init__(self, transport):
@@ -178,7 +179,7 @@ def processTransportStep(message):
         cid = message.chat.id
         user = ratp_dict[cid]
         user.transport = message.text
-        #if message.text not in ("metro", "tram", "rer", "noctilien", "bus"):
+        #if message.text not in ("metro", "tram", "rer", "noctilien", "bus"):
         if message.text == "noctilien":
             msg = bot.reply_to(message, 'Quelle ligne de ' + user.transport +  ' ? Ahh tu rentre encore de soirée ! ')
         else:
@@ -208,15 +209,70 @@ def processStationsStep(message):
     except Exception as e:
         bot.reply_to(message, CRYINGFACE + ' oooops je suis trop fatigué pour y arriver.. Ressaye! ' + str(e))
 
+@bot.message_handler(commands=['fav','Fav'])
+def fav(message):
+    cid = message.chat.id
+    bot.send_chat_action(cid, 'typing')
+    markup = types.ReplyKeyboardMarkup()
+    for value in r.lrange(cid, 0, -1):
+        markup.add(value)
+    bot.reply_to(message, 'Choose : ', reply_markup=markup)
 
-while True:
-    try:
-        print ("bot.polling()")
-        bot.polling(none_stop=True, interval=3)
-    except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout) as e: # HTTPSConnectionPool(host='api.telegram.org', port=443): Max retries exceeded with url:
-        print (str(e) + "\n")
-        time.sleep(15) # used to avoid temporary errors
-        exit (1) # run.sh, re-run bot.py
-    except Exception as e:
-        print (traceback.format_exc())
-        exit(1)
+@bot.message_handler(commands=['settings'])
+def settings(message):
+    choose = ['ajouter un favori', 'supprimer un favori']
+    cid = message.chat.id
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+    for c in choose:
+        markup.add(c)
+    bot.send_message(cid, "Choisir une action : ", reply_markup=markup)
+
+
+# filter on a specific message
+@bot.message_handler(func=lambda message: message.text == "ajouter un favori")
+def s_add(message):
+    cid = message.chat.id
+    bot.send_chat_action(cid, 'typing')
+    msg = bot.reply_to(message, 'Commande a sauvegarder ? (rer a defense)')
+    bot.register_next_step_handler(msg, command_save)
+def command_save(message):
+    cid = message.chat.id
+    l = r.lrange(cid, 0, -1)
+    if len(l) <= 4:
+        r.rpush(cid, "/"+message.text)
+        bot.send_chat_action(cid, 'typing')
+        bot.send_message(cid, "Favori ajouté!")
+    else:
+        bot.send_chat_action(cid, 'typing')
+        bot.send_message(cid, "Liste pleine "+CRYINGFACE)
+
+
+
+@bot.message_handler(func=lambda message: message.text == "supprimer un favori")
+def s_remove(message):
+    cid = message.chat.id
+    bot.send_chat_action(cid, 'typing')
+    m = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+    for value in r.lrange(cid, 0, -1):
+        m.add(str(value,'utf-8').lstrip('/'))
+    msg = bot.reply_to(message, 'Favori a supprimer (rer a defense)',reply_markup=m)
+    bot.register_next_step_handler(msg, command_remove)
+def command_remove(message):
+    cid = message.chat.id
+    error = r.lrem(cid, "/"+message.text, 0)
+    bot.send_chat_action(cid, 'typing')
+    if error == 0:
+        bot.send_message(cid, "Erreur "+CRYINGFACE)
+    else:
+        bot.send_message(cid, "Favori supprimé")
+
+
+
+try:
+    print ("bot.polling()")
+    bot.polling(none_stop=True, interval=3)
+except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout) as e: # HTTPSConnectionPool(host='api.telegram.org', port=443): Max retries exceeded with url:
+    print (str(e) + "\n")
+except Exception as e:
+    print (traceback.format_exc())
+    exit(1)
